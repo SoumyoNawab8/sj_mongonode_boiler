@@ -1,0 +1,1 @@
+This is a node mongodb boilerplate with authentication check.

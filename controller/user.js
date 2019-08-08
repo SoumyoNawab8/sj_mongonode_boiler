@@ -1,46 +1,23 @@
+
 const bcrypt=require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const ObjectId=require('mongodb').ObjectID;
 
 
-exports.register=(req,res,db,client)=>{
+exports.register=(req,res,db)=>{
     let data=req.body;
-    console.log(data);
 
-    db.collection('users').findOne({Email_Id:data.Email_Id, Mobile_No:data.Mobile_No}).then(user=>{
+    db.collection('users').findOne({email:data.email,phone:data.phone}).then(user=>{
         if(user==null){
             var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(data.Password, salt);
-            data.Password=hash;
+            var hash = bcrypt.hashSync(data.password, salt);
+            data.password=hash;
             db.collection('users').insertOne(data).then(newUser=>{
-                res.send({Status:1,msg:'Registration Successfull',_msid:newUser.insertedId});
-                //client.close();
-            }).catch(err=>{res.send({Status:0,msg:'Error Occured'})})
+                res.send({status:true,message:'User Registered'});
+            }).catch(err=>{res.send({status:false,message:err})})
         }
         else{
-            res.send({Status:0,msg:"Already Registered"});
-            // client.close();
-        }
-    })
-}
-
-exports.register_otp=(req,res,db,client)=>{
-    let data=req.body;
-    console.log(data);
-
-    db.collection('users').findOne({Email_Id:data.Email_Id, Mobile_No:data.Mobile_No}).then(user=>{
-        if(user==null){
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(data.Password, salt);
-            data.Password=hash;
-            db.collection('users').insertOne(data).then(newUser=>{
-                res.send({Status:1,msg:'Registration Successfull',_msid:newUser.insertedId});
-                //client.close();
-            }).catch(err=>{res.send({Status:0,msg:'Error Occured'})})
-        }
-        else{
-            res.send({Status:0,msg:"Already Registered"});
-            // client.close();
+            res.send({status:false,message:"User already Exist"});
         }
     })
 }
@@ -48,18 +25,18 @@ exports.register_otp=(req,res,db,client)=>{
 exports.login=(req,res,db)=>{
     let data=req.body;
 
-    db.collection('users').findOne({Mobile_No:data.Mobile_No}).then(user=>{
+    db.collection('users').findOne({email:data.email}).then(user=>{
         if(user!=null){
-            if(bcrypt.compareSync(data.Password, user.Password)){
-                res.send({Status:1 ,details:Object.assign({},user,{_msid:user._id}),ProjectDetails:{ProjectId:'32323',ProjectName:'Whatever',Location:'Kol',ProjCreatedDate:'27/07/19',ProjLastDate:'27/07/19'}});
+            if(bcrypt.compareSync(data.password, user.password)){
+                res.send({status:true,user,token:jwt.sign(user, 'pall')});
             }
             else{
-                res.send({Status:0,message:'Invalid password'})
+                res.send({status:false,message:'Invalid password'})
             }
             
         }
         else{
-            res.send({Status:0,message:"Err code"})
+            res.send({status:false,message:"No user found."})
         }
     })
 }
@@ -73,4 +50,5 @@ exports.profile=(req,res,db)=>{
     }).catch(err=>{
         res.send({status:false,message:err})
     })
+
 }
