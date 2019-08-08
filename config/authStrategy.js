@@ -4,7 +4,7 @@ module.exports=(req,res,db,next)=>{
     let token=req.headers.authorization;
     token=token.split(" ")[1];
 
-    jwt.verify(token,'proj', function(err, decoded) {
+    jwt.verify(token,'pall', function(err, decoded) {
         if(err){
            res.status(401).send({message:"Unauthorized Request"});
         }

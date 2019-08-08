@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken');
 const ObjectId=require('mongodb').ObjectID;
 
 
-exports.register=(req,res,db,client)=>{
+exports.register=(req,res,db)=>{
     let data=req.body;
 
     db.collection('users').findOne({email:data.email,phone:data.phone}).then(user=>{
@@ -13,12 +13,10 @@ exports.register=(req,res,db,client)=>{
             data.password=hash;
             db.collection('users').insertOne(data).then(newUser=>{
                 res.send({status:true,message:'User Registered'});
-                client.close();
             }).catch(err=>{res.send({status:false,message:err})})
         }
         else{
             res.send({status:false,message:"User already Exist"});
-            client.close();
         }
     })
 }
@@ -29,7 +27,7 @@ exports.login=(req,res,db)=>{
     db.collection('users').findOne({email:data.email}).then(user=>{
         if(user!=null){
             if(bcrypt.compareSync(data.password, user.password)){
-                res.send({status:true,user,token:jwt.sign(user, 'proj')});
+                res.send({status:true,user,token:jwt.sign(user, 'pall')});
             }
             else{
                 res.send({status:false,message:'Invalid password'})

@@ -1,0 +1,29 @@
+{
+  "products": {
+    "required": ["name","price","voltage"],
+    "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "must be a string and is required"
+      },
+      "price": {
+        "bsonType": "int",
+        "minimum": 0,
+        "description": "must be an integer and is required"
+      },
+      "voltage": {
+        "bsonType": "int",
+        "minimum": 0,
+        "description": "must be an integer and is required"
+      },
+      "short_description": {
+        "bsonType": "string",
+        "description": "must be a string"
+      },
+      "specifications": {
+        "bsonType": "object",
+        "description": ""
+      }
+    }
+  }
+}
