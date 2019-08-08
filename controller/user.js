@@ -1,3 +1,4 @@
+
 const bcrypt=require('bcryptjs');
 var jwt = require('jsonwebtoken');
 const ObjectId=require('mongodb').ObjectID;
@@ -49,4 +50,5 @@ exports.profile=(req,res,db)=>{
     }).catch(err=>{
         res.send({status:false,message:err})
     })
+
 }
