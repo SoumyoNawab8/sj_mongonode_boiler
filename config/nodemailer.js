@@ -12,7 +12,7 @@ var transporter = nodemailer.createTransport({
 const sendMail=(data)=>new Promise((resolve,reject)=>{
   console.log(data)
     const mailOptions = {
-        from: 'admin@letzgetwed.com', // sender address
+        from: process.env.MAIL_USERNAME, // sender address
         to: data.email, // list of receivers
         subject: data.subject, // Subject line
         html: data.message// plain text body
